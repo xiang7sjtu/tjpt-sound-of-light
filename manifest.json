@@ -1,11 +1,11 @@
 {
   "version": 1,
   "project": "声的十四行诗与听见一束光",
-  "createdAt": "2026-11-21T17:52:45.456Z",
+  "createdAt": "2026-11-21T19:10:21.941Z",
   "kdf": {
     "name": "PBKDF2-SHA-256",
     "iterations": 210000,
-    "salt": "GJCqIE47BzhrLE1W0AqvYA=="
+    "salt": "R816rouSXZAZF0aUgCx3ew=="
   },
   "cipher": "AES-256-GCM",
   "assets": [
@@ -31,9 +31,9 @@
       "filename": "声的十四行诗与听见一束光_PPT讲解_实验现象版.mp4",
       "description": "1920 × 1080 · H.264 / AAC",
       "download": false,
-      "plainBytes": 14976383,
-      "encryptedBytes": 14976416,
-      "sha256": "baf7a42038651d013e71495a6b36ab709214fc130d07d40800e1a54e7178b4ac"
+      "plainBytes": 19053072,
+      "encryptedBytes": 19053105,
+      "sha256": "d35007188cd38d71391327c215b35968ec7b36697700567220e2496919fc410d"
     },
     {
       "id": "script",
@@ -44,9 +44,9 @@
       "filename": "声的十四行诗与听见一束光_PPT讲解_AI文字稿.txt",
       "description": "纯文本 · 18 段",
       "download": true,
-      "plainBytes": 3932,
-      "encryptedBytes": 3965,
-      "sha256": "2fb327ca0bca98182a7e63e77ecace2f302357f50b5da846924bf97ab5243d37"
+      "plainBytes": 5706,
+      "encryptedBytes": 5739,
+      "sha256": "c900bb74d9db7bb6a5e061e261feda2e9ec1903c674752a24dd9ad05e59bc4bc"
     },
     {
       "id": "ppt",
@@ -57,9 +57,9 @@
       "filename": "声的十四行诗与听见一束光_项目汇报_终稿.pptx",
       "description": "18 页 · 终稿",
       "download": true,
-      "plainBytes": 910282,
-      "encryptedBytes": 910315,
-      "sha256": "c5af1e0effdb0068f3625102d985c8e3917cd3f51df7fd69f1cb19256fce1512"
+      "plainBytes": 912046,
+      "encryptedBytes": 912079,
+      "sha256": "68035dc05f05cc62f66267c27c8ad436a1b647cdca220ef5c53b9520e303cd2e"
     },
     {
       "id": "pdf",
@@ -70,9 +70,9 @@
       "filename": "声的十四行诗与听见一束光_设计说明书.pdf",
       "description": "A4 · 21 页",
       "download": true,
-      "plainBytes": 1467499,
-      "encryptedBytes": 1467532,
-      "sha256": "bc42dde4452aa2115c2bc4b0ba80fcbbc7eaa46e84db7db4a92274457e611277"
+      "plainBytes": 1480982,
+      "encryptedBytes": 1481015,
+      "sha256": "539ae54491bf1dd2811eb32724042ad8fe7d689e81534f08cf1a49cdfb4f62f7"
     }
   ]
 }
