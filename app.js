@@ -113,32 +113,41 @@ async function decryptBuffer(buffer, key) {
 }
 
 async function fetchEncryptedAsset(asset, onProgress) {
-  const response = await fetch(`./assets/${asset.file}`, { cache: "no-store" });
-  if (!response.ok) {
-    throw new Error(`无法读取 ${asset.label}`);
-  }
-  const total = Number(response.headers.get("content-length")) || asset.encryptedBytes;
-  if (!response.body || !onProgress) {
-    return response.arrayBuffer();
+  const parts = asset.parts?.length
+    ? asset.parts
+    : [{ file: asset.file, encryptedBytes: asset.encryptedBytes }];
+  const total = parts.reduce((sum, part) => sum + part.encryptedBytes, 0);
+  const output = new Uint8Array(total);
+  let received = 0;
+
+  for (const part of parts) {
+    const response = await fetch(`./assets/${part.file}`, { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error(`无法读取 ${asset.label}`);
+    }
+
+    if (!response.body) {
+      const buffer = new Uint8Array(await response.arrayBuffer());
+      output.set(buffer, received);
+      received += buffer.length;
+      onProgress?.(Math.min(1, received / total));
+      continue;
+    }
+
+    const reader = response.body.getReader();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) {
+        break;
+      }
+      output.set(value, received);
+      received += value.length;
+      onProgress?.(Math.min(1, received / total));
+    }
   }
 
-  const reader = response.body.getReader();
-  const chunks = [];
-  let received = 0;
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) {
-      break;
-    }
-    chunks.push(value);
-    received += value.length;
-    onProgress(Math.min(1, received / total));
-  }
-  const output = new Uint8Array(received);
-  let offset = 0;
-  for (const chunk of chunks) {
-    output.set(chunk, offset);
-    offset += chunk.length;
+  if (received !== total) {
+    throw new Error(`${asset.label} 分片不完整`);
   }
   return output.buffer;
 }

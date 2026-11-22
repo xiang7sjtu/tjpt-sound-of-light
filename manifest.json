@@ -1,11 +1,11 @@
 {
   "version": 1,
   "project": "声的十四行诗与听见一束光",
-  "createdAt": "2026-11-22T07:27:46.481Z",
+  "createdAt": "2026-11-22T08:13:48.846Z",
   "kdf": {
     "name": "PBKDF2-SHA-256",
     "iterations": 210000,
-    "salt": "iYugC3lXBJskGMHrXLB4rQ=="
+    "salt": "Q8oFYv5DVaUiC288d9Y7cA=="
   },
   "cipher": "AES-256-GCM",
   "assets": [
@@ -13,66 +13,95 @@
       "id": "check",
       "label": "访问校验",
       "kind": "check",
-      "file": "check.bin",
       "mime": "text/plain;charset=utf-8",
       "filename": "",
       "description": "",
       "download": false,
       "plainBytes": 14,
       "encryptedBytes": 47,
-      "sha256": "c1322dd6ccc825f8ead58594fa98d5dc42b453f24bea65120a8714be0d10e330"
+      "sha256": "c1322dd6ccc825f8ead58594fa98d5dc42b453f24bea65120a8714be0d10e330",
+      "file": "check.bin"
     },
     {
       "id": "video",
       "label": "实验现象版讲解视频",
       "kind": "video",
-      "file": "video.bin",
       "mime": "video/mp4",
       "filename": "声的十四行诗与听见一束光_PPT讲解_实验现象版.mp4",
       "description": "1920 × 1080 · H.264 / AAC",
       "download": false,
-      "plainBytes": 22569627,
-      "encryptedBytes": 22569660,
-      "sha256": "f27c2483c6260aaf85c7dc208400b2d402f50a18a2e1aff9ee0187e804c2cd7e"
+      "plainBytes": 27733426,
+      "encryptedBytes": 27733459,
+      "sha256": "ba6b6cd31bbd21b06f921af5af9afb8dbaa5600b9068e7424d57491a0f3d6532",
+      "parts": [
+        {
+          "file": "video.part-01.bin",
+          "encryptedBytes": 4194304
+        },
+        {
+          "file": "video.part-02.bin",
+          "encryptedBytes": 4194304
+        },
+        {
+          "file": "video.part-03.bin",
+          "encryptedBytes": 4194304
+        },
+        {
+          "file": "video.part-04.bin",
+          "encryptedBytes": 4194304
+        },
+        {
+          "file": "video.part-05.bin",
+          "encryptedBytes": 4194304
+        },
+        {
+          "file": "video.part-06.bin",
+          "encryptedBytes": 4194304
+        },
+        {
+          "file": "video.part-07.bin",
+          "encryptedBytes": 2567635
+        }
+      ]
     },
     {
       "id": "script",
       "label": "AI 讲解文字稿",
       "kind": "script",
-      "file": "script.bin",
       "mime": "text/plain;charset=utf-8",
       "filename": "声的十四行诗与听见一束光_PPT讲解_AI文字稿.txt",
       "description": "纯文本 · 18 段",
       "download": true,
-      "plainBytes": 7079,
-      "encryptedBytes": 7112,
-      "sha256": "016143293a5a4dde71713ffeb671a085490b9c72857f708c236d7570e71ee090"
+      "plainBytes": 7340,
+      "encryptedBytes": 7373,
+      "sha256": "aa5b3db76f367a4ac8aaa8338c1a2415d69dc40fe7c260df8bc9409f3874aec0",
+      "file": "script.bin"
     },
     {
       "id": "ppt",
       "label": "项目汇报 PPT",
       "kind": "document",
-      "file": "ppt.bin",
       "mime": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
       "filename": "声的十四行诗与听见一束光_项目汇报_终稿.pptx",
       "description": "18 页 · 终稿",
       "download": true,
       "plainBytes": 912471,
       "encryptedBytes": 912504,
-      "sha256": "6e05deea2eb8d0cd25ad8c59868c7108ff378c75c27f1b8223344f7770cc6fb3"
+      "sha256": "6e05deea2eb8d0cd25ad8c59868c7108ff378c75c27f1b8223344f7770cc6fb3",
+      "file": "ppt.bin"
     },
     {
       "id": "pdf",
       "label": "设计说明书",
       "kind": "document",
-      "file": "pdf.bin",
       "mime": "application/pdf",
       "filename": "声的十四行诗与听见一束光_设计说明书.pdf",
       "description": "A4 · 21 页",
       "download": true,
       "plainBytes": 1487090,
       "encryptedBytes": 1487123,
-      "sha256": "f3c1a47357cc1251c6c85134447996a61373e5583034b7f79549330b58108e08"
+      "sha256": "f3c1a47357cc1251c6c85134447996a61373e5583034b7f79549330b58108e08",
+      "file": "pdf.bin"
     }
   ]
 }
