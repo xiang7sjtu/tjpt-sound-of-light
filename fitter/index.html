@@ -643,6 +643,14 @@
       line-height: 1.78;
     }
 
+    .evidence-copy .source-note {
+      margin-top: 11px;
+      padding-top: 9px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
     .equation {
       margin-top: 12px;
       font-family: Georgia, serif;
@@ -1081,6 +1089,7 @@
               <div>
                 <h3>从“点”到“环”的可见条件</h3>
                 <p>当光斑运动周期短于人眼与相机曝光时间，快速往返被积分成连续轨迹；当两个方向的膜斜率接近等频、但振幅或相位不同，轨迹就会由线段扩展为倾斜环。原视频里大量出现的环，不是“拟合失败”，而是二维响应接近 1:1 的直接线索。</p>
+                <p class="source-note"><strong>声源探索：</strong>手机扬声器用 Tone generator 发声时，光斑常只有轻微变化。软件设定频率不等于膜前实际声压；手机低频输出和最大声压有限、频响不平，系统还可能限幅和保护，单音未命中膜模式时响应很小。改用人声后，宽频带和快速起伏更容易激起多个模式。当前未测膜前声压，不能只归因于功率。</p>
               </div>
               <div>
                 <h3>拟合器在做什么</h3>
@@ -1157,7 +1166,7 @@
         </section>
 
         <section class="workflow" aria-label="数字分析工作流">
-          <div class="workflow-step"><b>01 采集声音</b><span>Phyphox 或 Audacity 记录频率、RMS 与频谱，并导出原始数据。</span></div>
+          <div class="workflow-step"><b>01 采集声音</b><span>以实际人声为主要激励，用 Phyphox 或 Audacity 记录主频、RMS 与频谱，并导出原始数据。</span></div>
           <div class="workflow-step"><b>02 记录图案</b><span>固定曝光与屏距拍摄光斑，Tracker 逐帧读取光斑中心坐标。</span></div>
           <div class="workflow-step"><b>03 等效拟合</b><span>用本网页联合调整 f、A、η、f_y/f_x、φ、ζ 和 L，比较轨迹与频谱。</span></div>
           <div class="workflow-step"><b>04 检验误差</b><span>用重复实验、标尺、同步触发和参数扫描区分离散波动、过曝与模型偏差。</span></div>
