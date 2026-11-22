@@ -332,6 +332,41 @@
 
     .action-stack .wide { grid-column: 1 / -1; }
 
+    .preset-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .preset {
+      min-height: 42px;
+      padding: 7px 8px;
+      border-color: var(--line);
+      background: rgba(255,255,255,.20);
+      color: #3f4a4e;
+      font-size: 11px;
+      text-align: left;
+    }
+
+    .preset span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-family: "Roboto Mono", Consolas, monospace;
+      font-size: 8px;
+      letter-spacing: .04em;
+    }
+
+    .preset:hover,
+    .preset.active {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .preset:hover span,
+    .preset.active span { color: var(--acid); }
+
     .upload-label {
       display: block;
       text-align: center;
@@ -615,6 +650,123 @@
       color: var(--ink);
     }
 
+    .pattern-gallery {
+      margin-top: 25px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+    }
+
+    .gallery-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 15px;
+    }
+
+    .gallery-head h3 {
+      margin: 0;
+      font-family: "Noto Serif SC", "STSong", serif;
+      font-size: 20px;
+    }
+
+    .gallery-head p {
+      margin: 0;
+      max-width: 580px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.65;
+      text-align: right;
+    }
+
+    .pattern-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+
+    .pattern-card {
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.24);
+      color: var(--ink);
+      text-align: left;
+    }
+
+    .pattern-card figure {
+      position: relative;
+      height: 142px;
+      margin: 0;
+      overflow: hidden;
+      background: #b8b9b5;
+    }
+
+    .pattern-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: saturate(.88) contrast(1.06);
+      transition: transform .25s ease, filter .25s ease;
+    }
+
+    .pattern-card:hover img,
+    .pattern-card.active img {
+      transform: scale(1.035);
+      filter: saturate(1.05) contrast(1.12);
+    }
+
+    .pattern-card figure::after {
+      content: "REAL / 实验";
+      position: absolute;
+      left: 9px;
+      top: 9px;
+      padding: 4px 6px;
+      background: rgba(7,16,18,.82);
+      color: var(--paper);
+      font-family: "Roboto Mono", Consolas, monospace;
+      font-size: 7px;
+      letter-spacing: .1em;
+    }
+
+    .pattern-card-copy {
+      display: block;
+      min-height: 78px;
+      padding: 10px 11px 11px;
+    }
+
+    .pattern-card b {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .pattern-card b span {
+      color: var(--muted);
+      font-family: "Roboto Mono", Consolas, monospace;
+      font-size: 8px;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .pattern-card small {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .pattern-card:hover,
+    .pattern-card.active {
+      background: rgba(201,244,102,.22);
+    }
+
     .workflow {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -686,6 +838,7 @@
       .metrics-strip { grid-template-columns: repeat(3, 1fr); }
       .metric:nth-child(n+4) { display: none; }
       .evidence-band { grid-template-columns: 230px 1fr; }
+      .pattern-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .workflow { grid-template-columns: repeat(2, 1fr); }
       .workflow-step:nth-child(2) { border-right: 0; }
       .workflow-step:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
@@ -715,6 +868,10 @@
       .metric:nth-child(n+3) { display: none; }
       .evidence-band { grid-template-columns: 1fr; }
       .evidence-copy { grid-template-columns: 1fr; gap: 18px; }
+      .gallery-head { display: block; }
+      .gallery-head p { margin-top: 8px; text-align: left; }
+      .pattern-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .pattern-card figure { height: 126px; }
       .workflow { grid-template-columns: 1fr; }
       .workflow-step { border-right: 0; border-bottom: 1px solid var(--line); }
       .footer { flex-direction: column; }
@@ -774,15 +931,15 @@
           </div>
           <div class="slider-row">
             <label class="slider-label" for="amplitude">
-              <span>驱动强度 A</span><output id="amplitudeOut">72 %</output>
+              <span>驱动强度 A</span><output id="amplitudeOut">68 %</output>
             </label>
-            <input id="amplitude" type="range" min="0" max="100" step="1" value="72">
+            <input id="amplitude" type="range" min="0" max="100" step="1" value="68">
           </div>
           <div class="slider-row">
             <label class="slider-label" for="harmonics">
-              <span>泛音含量 η</span><output id="harmonicsOut">18 %</output>
+              <span>泛音含量 η</span><output id="harmonicsOut">8 %</output>
             </label>
-            <input id="harmonics" type="range" min="0" max="80" step="1" value="18">
+            <input id="harmonics" type="range" min="0" max="80" step="1" value="8">
           </div>
         </div>
 
@@ -790,26 +947,57 @@
           <p class="section-label">03 / 二维响应</p>
           <div class="slider-row">
             <label class="slider-label" for="ratio">
-              <span>双轴频率比 f<sub>y</sub>/f<sub>x</sub></span><output id="ratioOut">1.50</output>
+              <span>双轴频率比 f<sub>y</sub>/f<sub>x</sub></span><output id="ratioOut">1.00</output>
             </label>
-            <input id="ratio" type="range" min="0.5" max="4" step="0.01" value="1.5">
+            <input id="ratio" type="range" min="0.5" max="4" step="0.01" value="1">
           </div>
           <div class="slider-row">
             <label class="slider-label" for="phase">
-              <span>相位差 φ</span><output id="phaseOut">0.20π</output>
+              <span>相位差 φ</span><output id="phaseOut">0.35π</output>
             </label>
-            <input id="phase" type="range" min="0" max="2" step="0.01" value="0.20">
+            <input id="phase" type="range" min="0" max="2" step="0.01" value="0.35">
+          </div>
+          <div class="slider-row">
+            <label class="slider-label" for="axisRatio">
+              <span>两轴振幅比 A<sub>y</sub>/A<sub>x</sub></span><output id="axisRatioOut">0.55</output>
+            </label>
+            <input id="axisRatio" type="range" min="0.12" max="1.25" step="0.01" value="0.55">
+          </div>
+          <div class="slider-row">
+            <label class="slider-label" for="tilt">
+              <span>轨迹倾角 β</span><output id="tiltOut">-28°</output>
+            </label>
+            <input id="tilt" type="range" min="-90" max="90" step="1" value="-28">
           </div>
           <div class="slider-row">
             <label class="slider-label" for="damping">
-              <span>膜阻尼 ζ</span><output id="dampingOut">0.16</output>
+              <span>膜阻尼 ζ</span><output id="dampingOut">0.12</output>
             </label>
-            <input id="damping" type="range" min="0.02" max="0.6" step="0.01" value="0.16">
+            <input id="damping" type="range" min="0.02" max="0.6" step="0.01" value="0.12">
+          </div>
+          <div class="slider-row">
+            <label class="slider-label" for="drift">
+              <span>模式漂移 μ</span><output id="driftOut">0.00</output>
+            </label>
+            <input id="drift" type="range" min="0" max="1" step="0.01" value="0">
           </div>
         </div>
 
         <div class="control-section">
-          <p class="section-label">04 / 光学杠杆</p>
+          <p class="section-label">04 / 实验图形</p>
+          <div class="preset-grid" role="group" aria-label="实验图形预设">
+            <button class="preset active" data-pattern="ring">单倾斜环<span>1:1 · 椭圆</span></button>
+            <button class="preset" data-pattern="slender">细长环<span>高纵横比</span></button>
+            <button class="preset" data-pattern="doubleRing">双环<span>轻微失谐</span></button>
+            <button class="preset" data-pattern="crossLeaf">交叉双叶<span>2:1 图形</span></button>
+            <button class="preset" data-pattern="multiRing">多环 / 准周期<span>模式漂移</span></button>
+            <button class="preset" data-pattern="irregular">不规则轨迹<span>泛音 + 漂移</span></button>
+          </div>
+          <p class="analysis-note">真实实验里出现大量环，通常说明两个方向的响应接近等频；双环、多环还要把相位漂移、振幅不等和曝光拖影一起考虑。预设只复现形态关系，不能由一张图唯一反演薄膜参数。</p>
+        </div>
+
+        <div class="control-section">
+          <p class="section-label">05 / 光学杠杆</p>
           <div class="slider-row">
             <label class="slider-label" for="tension">
               <span>相对张力 T/T<sub>0</sub></span><output id="tensionOut">0.62</output>
@@ -825,7 +1013,7 @@
         </div>
 
         <div class="control-section">
-          <p class="section-label">05 / 采集与拟合</p>
+          <p class="section-label">06 / 采集与拟合</p>
           <div class="action-stack">
             <button class="fit-btn" id="autoFit">自动拟合</button>
             <button class="ghost-btn" id="sampleFit">载入示例</button>
@@ -833,8 +1021,6 @@
               导入 WAV / MP3
               <input id="audioFile" type="file" accept="audio/*">
             </label>
-            <button class="ghost-btn" id="presetLoop">闭环预设</button>
-            <button class="ghost-btn" id="presetOver">过驱预设</button>
             <button class="ghost-btn wide" id="exportCsv">导出轨迹 CSV</button>
           </div>
           <p class="analysis-note">麦克风需在 localhost 或 HTTPS 环境授权。网页拟合是基于二维响应与光学杠杆的等效参数模型，用于比较趋势，不替代逐帧标定。</p>
@@ -894,7 +1080,7 @@
             <div class="evidence-copy">
               <div>
                 <h3>从“点”到“环”的可见条件</h3>
-                <p>当光斑运动周期短于人眼与相机曝光时间，快速往返被积分成连续轨迹；当二维斜率不等相位耦合时，轨迹由线段扩展为闭合环或倾斜椭圆。原视频的环状亮斑与高速扫线可作为这一机制的定性证据。</p>
+                <p>当光斑运动周期短于人眼与相机曝光时间，快速往返被积分成连续轨迹；当两个方向的膜斜率接近等频、但振幅或相位不同，轨迹就会由线段扩展为倾斜环。原视频里大量出现的环，不是“拟合失败”，而是二维响应接近 1:1 的直接线索。</p>
               </div>
               <div>
                 <h3>拟合器在做什么</h3>
@@ -902,6 +1088,71 @@
                 <div class="equation">δs(t) ≈ 2L · θ(t),&nbsp; θ(t) ≈ ∇w(r<sub>m</sub>, t)</div>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section class="pattern-gallery" aria-labelledby="galleryTitle">
+          <div class="gallery-head">
+            <h3 id="galleryTitle">真实实验轨迹图库</h3>
+            <p>照片来自本轮原始实验记录。点击任一照片，会切换到相近的等效模型预设；预设只复现形态关系，不代表这些真实薄膜参数已被唯一反演。</p>
+          </div>
+          <div class="pattern-grid">
+            <button type="button" class="pattern-card active" data-pattern="ring">
+              <figure><img src="assets/experiment-patterns/ring-thin.jpg" alt="真实实验中的单倾斜椭圆光环"></figure>
+              <span class="pattern-card-copy">
+                <b>单倾斜环 <span>1:1附近</span></b>
+                <small>两轴接近等频，相位差与振幅比决定椭圆的长短和朝向。</small>
+              </span>
+            </button>
+            <button type="button" class="pattern-card" data-pattern="slender">
+              <figure><img src="assets/experiment-patterns/ring-elongated.jpg" alt="真实实验中的细长倾斜光环"></figure>
+              <span class="pattern-card-copy">
+                <b>细长环 <span>高纵横比</span></b>
+                <small>一个方向的膜斜率明显更小，轨迹被压成窄椭圆。</small>
+              </span>
+            </button>
+            <button type="button" class="pattern-card" data-pattern="doubleRing">
+              <figure><img src="assets/experiment-patterns/double-ellipse.jpg" alt="真实实验中相互错开的双环轨迹"></figure>
+              <span class="pattern-card-copy">
+                <b>双环叠加 <span>缓慢漂移</span></b>
+                <small>拍摄窗口内相位或频率轻微变化，两次扫过没有完全重合。</small>
+              </span>
+            </button>
+            <button type="button" class="pattern-card" data-pattern="crossLeaf">
+              <figure><img src="assets/experiment-patterns/cross-leaf.jpg" alt="真实实验中的交叉双叶激光轨迹"></figure>
+              <span class="pattern-card-copy">
+                <b>交叉双叶 <span>近2:1</span></b>
+                <small>两轴频率接近简单整数比时，轨迹在重复前发生交叉。</small>
+              </span>
+            </button>
+            <button type="button" class="pattern-card" data-pattern="multiRing">
+              <figure><img src="assets/experiment-patterns/multi-loop.jpg" alt="真实实验中的多重折返环形轨迹"></figure>
+              <span class="pattern-card-copy">
+                <b>多环折返 <span>漂移 + 泛音</span></b>
+                <small>模式漂移和少量泛音叠加后，同一条轨迹出现多组折返。</small>
+              </span>
+            </button>
+            <button type="button" class="pattern-card" data-pattern="multiRing">
+              <figure><img src="assets/experiment-patterns/double-loop.jpg" alt="真实实验中的不对称双叶环轨迹"></figure>
+              <span class="pattern-card-copy">
+                <b>双叶环 <span>非理想边界</span></b>
+                <small>薄膜张紧不均或夹具边界使两片叶瓣不再镜像对称。</small>
+              </span>
+            </button>
+            <button type="button" class="pattern-card" data-pattern="irregular">
+              <figure><img src="assets/experiment-patterns/asymmetric.jpg" alt="真实实验中的不对称三角环轨迹"></figure>
+              <span class="pattern-card-copy">
+                <b>不对称环 <span>非线性</span></b>
+                <small>局部褶皱、非线性响应与曝光共同改变闭合曲线的形状。</small>
+              </span>
+            </button>
+            <button type="button" class="pattern-card" data-pattern="irregular">
+              <figure><img src="assets/experiment-patterns/dense-trace.jpg" alt="真实实验中的密集交叉不规则轨迹"></figure>
+              <span class="pattern-card-copy">
+                <b>密集交叉 <span>多模态</span></b>
+                <small>复杂图案可能来自多模态、卷帘快门和曝光拖影，不能只凭外形定参数。</small>
+              </span>
+            </button>
           </div>
         </section>
 
@@ -932,13 +1183,22 @@
       const state = {
         waveform: "sine",
         frequency: 246,
-        amplitude: 72,
-        harmonics: 18,
-        ratio: 1.50,
-        phase: 0.20,
-        damping: 0.16,
+        amplitude: 68,
+        harmonics: 8,
+        ratio: 1,
+        phase: 0.35,
+        axisRatio: 0.55,
+        tilt: -28,
+        drift: 0,
+        driftRate: 0.008,
+        trailCycles: 3,
+        traceCopies: 1,
+        tracePhase: 0,
+        traceShift: 0,
+        damping: 0.12,
         tension: 0.62,
         distance: 2.50,
+        patternName: "单倾斜环",
         soundOn: false,
         recording: false,
         t: 0,
@@ -956,9 +1216,51 @@
         harmonics: ["harmonics", "harmonicsOut", (v) => `${Math.round(v)} %`],
         ratio: ["ratio", "ratioOut", (v) => Number(v).toFixed(2)],
         phase: ["phase", "phaseOut", (v) => `${Number(v).toFixed(2)}π`],
+        axisRatio: ["axisRatio", "axisRatioOut", (v) => Number(v).toFixed(2)],
+        tilt: ["tilt", "tiltOut", (v) => `${Math.round(v)}°`],
         damping: ["damping", "dampingOut", (v) => Number(v).toFixed(2)],
+        drift: ["drift", "driftOut", (v) => Number(v).toFixed(2)],
         tension: ["tension", "tensionOut", (v) => Number(v).toFixed(2)],
         distance: ["distance", "distanceOut", (v) => `${Number(v).toFixed(2)} m`]
+      };
+
+      const patterns = {
+        ring: {
+          frequency: 246, amplitude: 68, harmonics: 8, ratio: 1, phase: .35,
+          damping: .12, axisRatio: .55, tilt: -28, drift: 0, driftRate: .008, trailCycles: 3,
+          traceCopies: 1, tracePhase: 0, traceShift: 0,
+          patternName: "单倾斜环"
+        },
+        slender: {
+          frequency: 235, amplitude: 62, harmonics: 5, ratio: 1, phase: .42,
+          damping: .09, axisRatio: .22, tilt: -35, drift: .04, driftRate: .008, trailCycles: 2.5,
+          traceCopies: 1, tracePhase: 0, traceShift: 0,
+          patternName: "细长环"
+        },
+        doubleRing: {
+          frequency: 252, amplitude: 72, harmonics: 8, ratio: 1, phase: .38,
+          damping: .13, axisRatio: .48, tilt: -25, drift: .22, driftRate: .018, trailCycles: .82,
+          traceCopies: 2, tracePhase: .24, traceShift: .055,
+          patternName: "双环"
+        },
+        crossLeaf: {
+          frequency: 268, amplitude: 76, harmonics: 10, ratio: 2, phase: .08,
+          damping: .12, axisRatio: .68, tilt: -12, drift: .08, driftRate: .018, trailCycles: 2,
+          traceCopies: 1, tracePhase: 0, traceShift: 0,
+          patternName: "交叉双叶"
+        },
+        multiRing: {
+          frequency: 276, amplitude: 78, harmonics: 14, ratio: 1.5, phase: .28,
+          damping: .16, axisRatio: .60, tilt: -22, drift: .18, driftRate: .012, trailCycles: 1.15,
+          traceCopies: 3, tracePhase: .11, traceShift: .018,
+          patternName: "多环 / 准周期"
+        },
+        irregular: {
+          frequency: 286, amplitude: 88, harmonics: 26, ratio: 1.67, phase: .42,
+          damping: .28, axisRatio: .44, tilt: -18, drift: .24, driftRate: .018, trailCycles: 1.45,
+          traceCopies: 4, tracePhase: .18, traceShift: .022,
+          patternName: "不规则轨迹"
+        }
       };
 
       let audio = null;
@@ -1010,9 +1312,19 @@
 
       function patternDescription() {
         if (state.amplitude < 8) return "驱动接近阈值：光斑近似静止。提高振幅后，膜斜率才形成可辨识的轨迹。";
-        if (Math.abs(state.ratio - 1) < .08) return "双轴频率接近相等。相位差与振幅比决定轨迹是倾斜线、椭圆还是接近圆环。";
+        if (state.traceCopies > 1 && Math.abs(state.ratio - 1) < .08) {
+          return `${state.patternName}：两个方向的频率接近相等，曝光窗口内相位或中心位置又发生了轻微变化，于是同一椭圆被扫过不止一次。`;
+        }
+        if (state.traceCopies > 1) {
+          return `${state.patternName}：两轴频率接近简单整数比，轨迹在一个周期内多次折返；曝光期间的模式漂移把相邻轨迹错开，形成多组环或花瓣。`;
+        }
+        if (state.drift > .5) return `${state.patternName}：近有理频率比、轻微模式漂移与泛音叠加，使轨迹在重复前多次折返；曝光会把快速扫过的部分连成亮带。`;
+        if (Math.abs(state.ratio - 1) < .08) {
+          const shape = state.axisRatio < .34 ? "细长椭圆" : state.axisRatio < .82 ? "倾斜椭圆" : "近圆环";
+          return `${shape}：双轴频率接近相等，相位差约 ${state.phase.toFixed(2)}π，振幅比约 ${state.axisRatio.toFixed(2)}；两者共同决定环的宽窄和朝向。`;
+        }
         if (state.ratio > 3.2) return "高频率比产生密集花瓣状轨迹。当结构阻尼较高，亮线会变粗或呈现拖影。";
-        return `双轴频率比约为 ${state.ratio.toFixed(2)}。频率比越接近有理数，重复周期越短，闭合图案越稳定。`;
+        return `${state.patternName}：双轴频率比约为 ${state.ratio.toFixed(2)}。越接近简单有理数，轨迹越容易回到原处并形成闭环或花瓣。`;
       }
 
       function ensureAudioContext() {
@@ -1335,18 +1647,27 @@
         }
       });
 
-      $("presetLoop").addEventListener("click", () => {
-        applyPreset({ frequency: 220, amplitude: 70, ratio: 1.5, phase: .25, damping: .1, harmonics: 12 });
-        toast("闭环预设：近似 3:2 频率比，轨迹趋于重复");
+      document.querySelectorAll("[data-pattern]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const name = button.dataset.pattern;
+          if (!patterns[name]) return;
+          applyPreset(patterns[name]);
+          setActivePattern(name);
+          toast(`${state.patternName}：已切换等效模型参数，可继续手动微调。`);
+        });
       });
 
-      $("presetOver").addEventListener("click", () => {
-        applyPreset({ frequency: 320, amplitude: 96, ratio: 2.33, phase: .67, damping: .34, harmonics: 56 });
-        toast("过驱预设：振幅上探，曝光拖影和膜非线性会增强");
-      });
+      function setActivePattern(name) {
+        document.querySelectorAll("[data-pattern]").forEach((button) => {
+          const active = button.dataset.pattern === name;
+          button.classList.toggle("active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+      }
 
       function applyPreset(values) {
         Object.assign(state, values);
+        state.fitR2 = null;
         for (const [key, [inputId, outputId, fmt]] of Object.entries(controls)) {
           const input = $(inputId);
           const output = $(outputId);
@@ -1389,18 +1710,27 @@
         return Math.sin(phase);
       }
 
-      function patternPoint(t) {
+      function patternPoint(t, variant = 0) {
         const omega = 2 * Math.PI * clamp(state.frequency, 20, 1200) / 120;
         const amp = Math.pow(state.amplitude / 100, .84) * .86;
         const tensionFactor = .78 + .34 * state.tension;
         const damp = clamp(1 - state.damping * .42, .55, 1);
         const harmonic = state.harmonics / 100;
+        const copyCount = clamp(Math.round(state.traceCopies || 1), 1, 5);
+        const centeredVariant = variant - (copyCount - 1) / 2;
+        const driftPhase = state.drift * .78 * Math.sin(omega * (state.driftRate || .012) * t + .6);
+        const effectiveRatio = state.ratio + state.drift * .008 * Math.sin(omega * .007 * t);
+        const tracePhase = (state.tracePhase || 0) * centeredVariant;
+        const traceShift = (state.traceShift || 0) * centeredVariant;
         const xDrive = waveValue(omega * t, state.waveform) +
           harmonic * .35 * waveValue(omega * 3 * t + .4, "sine");
-        const yDrive = waveValue(omega * state.ratio * t + state.phase * Math.PI, state.waveform) +
+        const yDrive = waveValue(omega * effectiveRatio * t + state.phase * Math.PI + driftPhase + tracePhase, state.waveform) +
           harmonic * .22 * waveValue(omega * 2 * t + 1.1, "sine");
-        const x = amp * tensionFactor * damp * xDrive;
-        const y = amp * tensionFactor * damp * yDrive;
+        const xr = amp * tensionFactor * damp * xDrive;
+        const yr = amp * tensionFactor * damp * state.axisRatio * yDrive;
+        const beta = state.tilt * Math.PI / 180;
+        const x = xr * Math.cos(beta) - yr * Math.sin(beta) + traceShift;
+        const y = xr * Math.sin(beta) + yr * Math.cos(beta) + traceShift * .35;
         return { x, y };
       }
 
@@ -1449,33 +1779,40 @@
         ctx.stroke();
         ctx.restore();
 
-        const cycles = 22;
-        const points = Math.max(260, Math.floor(80 + state.ratio * 60));
-        const trailPoints = [];
-        for (let i = 0; i <= points; i++) {
-          const t = time + (i / points) * cycles;
-          trailPoints.push(patternPoint(t));
-        }
-
+        const cycles = clamp(state.trailCycles || 8, .45, 18);
+        const copies = clamp(Math.round(state.traceCopies || 1), 1, 5);
+        const points = Math.max(300, Math.floor(150 + state.ratio * 90 + cycles * 12));
         ctx.save();
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
-        for (let pass = 0; pass < 3; pass++) {
-          ctx.beginPath();
-          trailPoints.forEach((p, i) => {
-            const px = cx + p.x * scale;
-            const py = cy + p.y * scale;
-            if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
-          });
-          ctx.strokeStyle = pass === 0 ? "rgba(255,82,93,.12)" : pass === 1 ? "rgba(255,82,93,.24)" : "rgba(255,211,211,.92)";
-          ctx.lineWidth = pass === 0 ? 20 : pass === 1 ? 7 : 1.45;
-          if (pass === 0) ctx.shadowColor = "#ff525d";
-          if (pass === 0) ctx.shadowBlur = 25;
-          ctx.stroke();
+        for (let copy = 0; copy < copies; copy++) {
+          const trailPoints = [];
+          for (let i = 0; i <= points; i++) {
+            const t = time + (i / points) * cycles;
+            trailPoints.push(patternPoint(t, copy));
+          }
+          for (let pass = 0; pass < 3; pass++) {
+            ctx.beginPath();
+            trailPoints.forEach((p, i) => {
+              const px = cx + p.x * scale;
+              const py = cy + p.y * scale;
+              if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+            });
+            const copyAlpha = copies === 1 ? 1 : .72;
+            ctx.strokeStyle = pass === 0
+              ? `rgba(255,82,93,${.12 * copyAlpha})`
+              : pass === 1
+                ? `rgba(255,82,93,${.24 * copyAlpha})`
+                : `rgba(255,211,211,${.92 * copyAlpha})`;
+            ctx.lineWidth = pass === 0 ? 20 : pass === 1 ? 7 : 1.45;
+            if (pass === 0) ctx.shadowColor = "#ff525d";
+            if (pass === 0) ctx.shadowBlur = 25;
+            ctx.stroke();
+          }
         }
         ctx.restore();
 
-        const head = patternPoint(time + cycles);
+        const head = patternPoint(time + cycles, copies - 1);
         const hx = cx + head.x * scale;
         const hy = cy + head.y * scale;
         const grad = ctx.createRadialGradient(hx, hy, 0, hx, hy, 22);
@@ -1620,12 +1957,15 @@
         requestAnimationFrame(animate);
       }
 
+      setActivePattern("ring");
       updateReadouts();
       requestAnimationFrame(animate);
 
       window.seeingSound = {
         state,
+        patterns,
         applyPreset,
+        setActivePattern,
         analyzeSamples,
         loadExample() {
           const samples = makeDemoSamples();
