@@ -117,38 +117,55 @@ async function fetchEncryptedAsset(asset, onProgress) {
     ? asset.parts
     : [{ file: asset.file, encryptedBytes: asset.encryptedBytes }];
   const total = parts.reduce((sum, part) => sum + part.encryptedBytes, 0);
-  const output = new Uint8Array(total);
-  let received = 0;
+  const partProgress = new Array(parts.length).fill(0);
 
-  for (const part of parts) {
-    const response = await fetch(`./assets/${part.file}`, { cache: "no-store" });
-    if (!response.ok) {
-      throw new Error(`无法读取 ${asset.label}`);
-    }
-
-    if (!response.body) {
-      const buffer = new Uint8Array(await response.arrayBuffer());
-      output.set(buffer, received);
-      received += buffer.length;
-      onProgress?.(Math.min(1, received / total));
-      continue;
-    }
-
-    const reader = response.body.getReader();
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) {
-        break;
+  async function fetchPart(part, index) {
+    const delays = [0, 1200, 3000];
+    let lastError = null;
+    for (const delay of delays) {
+      if (delay) {
+        await new Promise((resolve) => window.setTimeout(resolve, delay));
       }
-      output.set(value, received);
-      received += value.length;
-      onProgress?.(Math.min(1, received / total));
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 90000);
+      try {
+        const response = await fetch(`./assets/${part.file}`, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        if (!response.ok) {
+          throw new Error(`无法读取 ${asset.label}`);
+        }
+        const buffer = new Uint8Array(await response.arrayBuffer());
+        if (buffer.byteLength !== part.encryptedBytes) {
+          throw new Error(`${asset.label} 分片不完整`);
+        }
+        partProgress[index] = buffer.byteLength;
+        const received = partProgress.reduce((sum, value) => sum + value, 0);
+        onProgress?.(Math.min(1, received / total));
+        return buffer;
+      } catch (error) {
+        lastError = error;
+      } finally {
+        window.clearTimeout(timeout);
+      }
     }
+    throw lastError || new Error(`无法读取 ${asset.label}`);
   }
 
+  const buffers = await Promise.all(parts.map(fetchPart));
+  const received = buffers.reduce((sum, buffer) => sum + buffer.byteLength, 0);
   if (received !== total) {
     throw new Error(`${asset.label} 分片不完整`);
   }
+
+  const output = new Uint8Array(total);
+  let offset = 0;
+  for (const buffer of buffers) {
+    output.set(buffer, offset);
+    offset += buffer.byteLength;
+  }
+  onProgress?.(1);
   return output.buffer;
 }
 
