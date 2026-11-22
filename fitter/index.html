@@ -1,0 +1,1641 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="声的十四行诗与听见一束光：声致振膜反射激光参数拟合器">
+  <link rel="icon" href="data:,">
+  <title>声的十四行诗｜膜振·光绘拟合器</title>
+  <style>
+    :root {
+      --paper: #f1eee4;
+      --paper-2: #e7e1d1;
+      --ink: #071518;
+      --muted: #667075;
+      --stage: #071012;
+      --laser: #ff525d;
+      --acid: #c9f466;
+      --cyan: #73d8d0;
+      --line: rgba(7, 21, 24, .16);
+      --shadow: 0 22px 70px rgba(7, 21, 24, .13);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(255,255,255,.74), transparent 31rem),
+        var(--paper);
+      color: var(--ink);
+      font-family: "Noto Sans SC", "Microsoft YaHei UI", sans-serif;
+    }
+
+    body { overflow-x: hidden; }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .shell {
+      max-width: 1540px;
+      margin: 0 auto;
+      padding: 26px 38px 38px;
+    }
+
+    .masthead {
+      display: grid;
+      grid-template-columns: 180px minmax(0, 1fr) auto;
+      gap: 30px;
+      align-items: end;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 19px;
+    }
+
+    .mark {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-family: "Noto Serif SC", "STSong", serif;
+      font-weight: 800;
+      letter-spacing: .09em;
+    }
+
+    .mark-sign {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--ink);
+      border-radius: 50%;
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 22px;
+      letter-spacing: -.08em;
+      background: var(--acid);
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-family: "Noto Serif SC", "STSong", serif;
+      font-size: clamp(27px, 3.1vw, 48px);
+      font-weight: 850;
+      letter-spacing: -.045em;
+      line-height: 1.05;
+    }
+
+    .title-block p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-family: Georgia, serif;
+      font-size: 13px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .08em;
+      padding-bottom: 5px;
+      white-space: nowrap;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--acid);
+      box-shadow: 0 0 0 5px rgba(201,244,102,.20);
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: 24px;
+      margin-top: 26px;
+      align-items: start;
+    }
+
+    .control-rail {
+      border: 1px solid var(--line);
+      background: rgba(244, 241, 232, .78);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      position: sticky;
+      top: 18px;
+    }
+
+    .rail-head {
+      padding: 17px 18px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .rail-head b {
+      font-family: "Noto Serif SC", "STSong", serif;
+      font-size: 16px;
+      letter-spacing: .04em;
+    }
+
+    .rail-head span {
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .13em;
+    }
+
+    .control-section {
+      padding: 17px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .control-section:last-child { border-bottom: 0; }
+
+    .section-label {
+      margin: 0 0 13px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .energy-row {
+      display: grid;
+      grid-template-columns: 1fr 76px;
+      gap: 10px;
+    }
+
+    .play-btn, .fit-btn, .ghost-btn, .preset {
+      border: 1px solid var(--ink);
+      background: transparent;
+      color: var(--ink);
+      transition: transform .16s ease, background .16s ease, color .16s ease;
+    }
+
+    .play-btn {
+      height: 44px;
+      background: var(--ink);
+      color: var(--paper);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      letter-spacing: .08em;
+      font-weight: 700;
+    }
+
+    .play-btn[data-on="true"] {
+      background: var(--laser);
+      border-color: var(--laser);
+      color: white;
+    }
+
+    .pause-icon {
+      width: 11px;
+      height: 12px;
+      border-left: 3px solid currentColor;
+      border-right: 3px solid currentColor;
+    }
+
+    .record-btn {
+      height: 44px;
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      background: transparent;
+      font-size: 12px;
+    }
+
+    .record-btn::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--laser);
+    }
+
+    .record-btn[data-recording="true"] {
+      border-color: var(--laser);
+      color: var(--laser);
+      background: rgba(255,82,93,.07);
+    }
+
+    .wave-options {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+      margin-bottom: 15px;
+    }
+
+    .wave-option {
+      border: 1px solid var(--line);
+      background: transparent;
+      padding: 9px 0 7px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .wave-option span {
+      display: block;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      line-height: 21px;
+      color: var(--ink);
+    }
+
+    .wave-option.active {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+    }
+
+    .wave-option.active span { color: var(--acid); }
+
+    .slider-row { margin: 0 0 14px; }
+    .slider-row:last-child { margin-bottom: 0; }
+
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 5px;
+      font-size: 12px;
+    }
+
+    .slider-label output {
+      font-family: "Roboto Mono", Consolas, monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    input[type="range"] {
+      appearance: none;
+      width: 100%;
+      height: 18px;
+      margin: 0;
+      background: transparent;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 2px;
+      background: rgba(7,21,24,.23);
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-top: -5px;
+      background: var(--ink);
+      border: 2px solid var(--paper);
+      box-shadow: 0 0 0 1px var(--ink);
+    }
+
+    input[type="range"]::-moz-range-track {
+      height: 2px;
+      background: rgba(7,21,24,.23);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--ink);
+      border: 2px solid var(--paper);
+    }
+
+    .action-stack {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .fit-btn, .ghost-btn {
+      min-height: 38px;
+      padding: 8px 9px;
+      font-size: 11px;
+      background: var(--acid);
+    }
+
+    .fit-btn { background: var(--acid); font-weight: 800; }
+    .ghost-btn { background: transparent; }
+
+    .action-stack .wide { grid-column: 1 / -1; }
+
+    .upload-label {
+      display: block;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .upload-label input { display: none; }
+
+    .analysis-note {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.55;
+    }
+
+    .stage-column { min-width: 0; }
+
+    .hero-stage {
+      position: relative;
+      min-height: 670px;
+      overflow: hidden;
+      background: var(--stage);
+      color: #f6f3e9;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 78% 23%, rgba(255,82,93,.10), transparent 17rem),
+        linear-gradient(90deg, transparent 49.9%, rgba(255,255,255,.018) 50%, transparent 50.1%),
+        linear-gradient(0deg, transparent 49.9%, rgba(255,255,255,.018) 50%, transparent 50.1%);
+      background-size: auto, 48px 48px, 48px 48px;
+    }
+
+    .stage-head {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 23px 25px 17px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .stage-head .eyebrow {
+      margin: 0 0 5px;
+      color: var(--acid);
+      font-family: "Roboto Mono", Consolas, monospace;
+      font-size: 10px;
+      letter-spacing: .16em;
+    }
+
+    .stage-head h2 {
+      margin: 0;
+      font-family: "Noto Serif SC", "STSong", serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: .03em;
+    }
+
+    .stage-meta {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      color: rgba(246,243,233,.58);
+      font-family: "Roboto Mono", Consolas, monospace;
+      font-size: 10px;
+      text-align: right;
+    }
+
+    .stage-meta b {
+      display: block;
+      color: #f6f3e9;
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    #stage {
+      position: absolute;
+      inset: 82px 0 126px;
+      width: 100%;
+      height: calc(100% - 208px);
+    }
+
+    .stage-readout {
+      position: absolute;
+      z-index: 4;
+      left: 24px;
+      top: 105px;
+      max-width: 210px;
+      pointer-events: none;
+    }
+
+    .stage-readout .big {
+      font-family: Georgia, serif;
+      font-size: clamp(43px, 6vw, 80px);
+      line-height: .9;
+      letter-spacing: -.06em;
+      font-style: italic;
+    }
+
+    .stage-readout .big small {
+      font-family: "Noto Sans SC", sans-serif;
+      font-style: normal;
+      font-size: 12px;
+      letter-spacing: .08em;
+      margin-left: 6px;
+    }
+
+    .stage-readout p {
+      margin: 13px 0 0;
+      max-width: 195px;
+      font-size: 11px;
+      line-height: 1.65;
+      color: rgba(246,243,233,.57);
+    }
+
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 15px;
+      border: 1px solid rgba(201,244,102,.4);
+      color: var(--acid);
+      padding: 5px 9px;
+      font-size: 9px;
+      letter-spacing: .12em;
+    }
+
+    .live-pill::before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--acid);
+    }
+
+    .lower-deck {
+      position: absolute;
+      z-index: 5;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 126px;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 1.7fr;
+      border-top: 1px solid rgba(255,255,255,.1);
+      background: rgba(7,16,18,.92);
+      backdrop-filter: blur(10px);
+    }
+
+    .lower-cell {
+      position: relative;
+      min-width: 0;
+      padding: 12px 14px 10px;
+      border-right: 1px solid rgba(255,255,255,.1);
+    }
+
+    .lower-cell:last-child { border-right: 0; }
+
+    .cell-label {
+      color: rgba(246,243,233,.48);
+      font-size: 9px;
+      letter-spacing: .12em;
+      margin-bottom: 5px;
+    }
+
+    #waveCanvas, #membraneCanvas, #spectrumCanvas {
+      display: block;
+      width: 100%;
+      height: 89px;
+    }
+
+    .metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      border: 1px solid var(--line);
+      border-top: 0;
+      background: rgba(255,255,255,.35);
+    }
+
+    .metric {
+      min-width: 0;
+      padding: 15px 16px 14px;
+      border-right: 1px solid var(--line);
+    }
+
+    .metric:last-child { border-right: 0; }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      letter-spacing: .12em;
+      margin-bottom: 5px;
+    }
+
+    .metric strong {
+      display: block;
+      font-family: Georgia, "Noto Serif SC", serif;
+      font-size: 22px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .metric em {
+      font-family: "Noto Sans SC", sans-serif;
+      font-size: 9px;
+      font-style: normal;
+      color: var(--muted);
+      margin-left: 3px;
+    }
+
+    .evidence-band {
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      margin-top: 24px;
+      border-top: 1px solid var(--line);
+      padding-top: 23px;
+      gap: 25px;
+    }
+
+    .evidence-image {
+      position: relative;
+      min-height: 196px;
+      overflow: hidden;
+      background: #c6c4bb;
+    }
+
+    .evidence-image img {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      object-fit: cover;
+      filter: saturate(.85) contrast(1.08);
+    }
+
+    .evidence-image::after {
+      content: "REAL OBSERVATION / 36 s";
+      position: absolute;
+      left: 12px;
+      bottom: 11px;
+      padding: 6px 9px;
+      background: var(--stage);
+      color: var(--paper);
+      font-family: "Roboto Mono", Consolas, monospace;
+      font-size: 8px;
+      letter-spacing: .13em;
+    }
+
+    .evidence-copy {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    .evidence-copy h3 {
+      margin: 0 0 9px;
+      font-family: "Noto Serif SC", "STSong", serif;
+      font-size: 20px;
+    }
+
+    .evidence-copy p {
+      margin: 0;
+      max-width: 560px;
+      color: #485358;
+      font-size: 12px;
+      line-height: 1.78;
+    }
+
+    .equation {
+      margin-top: 12px;
+      font-family: Georgia, serif;
+      font-size: 15px;
+      color: var(--ink);
+    }
+
+    .workflow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: stretch;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .workflow-step {
+      padding: 15px 16px 17px;
+      border-right: 1px solid var(--line);
+    }
+
+    .workflow-step:last-child { border-right: 0; }
+    .workflow-step b { display: block; margin-bottom: 5px; font-size: 12px; }
+    .workflow-step span { color: var(--muted); font-size: 10px; line-height: 1.6; }
+
+    .footer {
+      margin-top: 25px;
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.7;
+    }
+
+    .footer strong {
+      color: var(--ink);
+      font-family: "Noto Serif SC", "STSong", serif;
+      font-size: 13px;
+    }
+
+    .toast {
+      position: fixed;
+      z-index: 50;
+      left: 50%;
+      bottom: 28px;
+      transform: translate(-50%, 24px);
+      background: var(--ink);
+      color: var(--paper);
+      padding: 10px 15px;
+      font-size: 11px;
+      letter-spacing: .04em;
+      opacity: 0;
+      transition: .22s ease;
+      pointer-events: none;
+      box-shadow: 0 12px 34px rgba(0,0,0,.24);
+    }
+
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    .menu-toggle {
+      display: none;
+      border: 1px solid var(--ink);
+      background: transparent;
+      padding: 8px 10px;
+    }
+
+    @media (max-width: 1100px) {
+      .shell { padding: 20px; }
+      .masthead { grid-template-columns: 64px 1fr auto; }
+      .mark span:last-child { display: none; }
+      .workspace { grid-template-columns: 285px minmax(0, 1fr); gap: 16px; }
+      .hero-stage { min-height: 620px; }
+      .stage-meta { display: none; }
+      .lower-deck { grid-template-columns: 1fr 1fr; }
+      .lower-cell:nth-child(3) { display: none; }
+      .metrics-strip { grid-template-columns: repeat(3, 1fr); }
+      .metric:nth-child(n+4) { display: none; }
+      .evidence-band { grid-template-columns: 230px 1fr; }
+      .workflow { grid-template-columns: repeat(2, 1fr); }
+      .workflow-step:nth-child(2) { border-right: 0; }
+      .workflow-step:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+    }
+
+    @media (max-width: 760px) {
+      .shell { padding: 14px; }
+      .masthead { grid-template-columns: 44px 1fr auto; gap: 12px; }
+      .mark-sign { width: 36px; height: 36px; font-size: 18px; }
+      .title-block h1 { font-size: 23px; }
+      .title-block p { font-size: 8px; letter-spacing: .1em; }
+      .status { display: none; }
+      .menu-toggle { display: block; }
+      .workspace { display: block; }
+      .control-rail {
+        position: static;
+        display: none;
+        margin-bottom: 14px;
+      }
+      .control-rail.open { display: block; }
+      .hero-stage { min-height: 580px; }
+      .stage-head { padding: 18px; }
+      .stage-readout { left: 16px; top: 100px; }
+      .lower-deck { grid-template-columns: 1fr; height: 110px; }
+      .lower-cell:not(:first-child) { display: none; }
+      .metrics-strip { grid-template-columns: 1fr 1fr; }
+      .metric:nth-child(n+3) { display: none; }
+      .evidence-band { grid-template-columns: 1fr; }
+      .evidence-copy { grid-template-columns: 1fr; gap: 18px; }
+      .workflow { grid-template-columns: 1fr; }
+      .workflow-step { border-right: 0; border-bottom: 1px solid var(--line); }
+      .footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <div class="mark">
+        <div class="mark-sign">S/14</div>
+        <span>膜振光绘</span>
+      </div>
+      <div class="title-block">
+        <h1>声的十四行诗与听见一束光</h1>
+        <p>Sonnets of Sound · Seeing a Beam · Acoustic Membrane Laser Mapping</p>
+      </div>
+      <div class="status">
+        <span class="status-dot"></span>
+        <span>INTERACTIVE PHYSICS LAB · ONLINE</span>
+      </div>
+      <button class="menu-toggle" id="menuToggle" aria-label="打开参数面板">参数</button>
+    </header>
+
+    <section class="workspace">
+      <aside class="control-rail" id="controlRail" aria-label="声音与振膜参数">
+        <div class="rail-head">
+          <b>驱动参数</b>
+          <span>DRIVE / TRANSFER</span>
+        </div>
+
+        <div class="control-section">
+          <p class="section-label">01 / 声源</p>
+          <div class="energy-row">
+            <button class="play-btn" id="soundToggle" data-on="false">
+              <span class="pause-icon"></span>
+              <span id="soundLabel">开始发声</span>
+            </button>
+            <button class="record-btn" id="recordToggle" data-recording="false">录音</button>
+          </div>
+        </div>
+
+        <div class="control-section">
+          <p class="section-label">02 / 波形</p>
+          <div class="wave-options" role="group" aria-label="波形选择">
+            <button class="wave-option active" data-wave="sine"><span>∿</span>正弦</button>
+            <button class="wave-option" data-wave="triangle"><span>△</span>三角</button>
+            <button class="wave-option" data-wave="square"><span>⊓</span>方波</button>
+            <button class="wave-option" data-wave="sawtooth"><span>⌁</span>锯齿</button>
+          </div>
+
+          <div class="slider-row">
+            <label class="slider-label" for="frequency">
+              <span>驱动频率 f</span><output id="frequencyOut">246 Hz</output>
+            </label>
+            <input id="frequency" type="range" min="80" max="1200" step="1" value="246">
+          </div>
+          <div class="slider-row">
+            <label class="slider-label" for="amplitude">
+              <span>驱动强度 A</span><output id="amplitudeOut">72 %</output>
+            </label>
+            <input id="amplitude" type="range" min="0" max="100" step="1" value="72">
+          </div>
+          <div class="slider-row">
+            <label class="slider-label" for="harmonics">
+              <span>泛音含量 η</span><output id="harmonicsOut">18 %</output>
+            </label>
+            <input id="harmonics" type="range" min="0" max="80" step="1" value="18">
+          </div>
+        </div>
+
+        <div class="control-section">
+          <p class="section-label">03 / 二维响应</p>
+          <div class="slider-row">
+            <label class="slider-label" for="ratio">
+              <span>双轴频率比 f<sub>y</sub>/f<sub>x</sub></span><output id="ratioOut">1.50</output>
+            </label>
+            <input id="ratio" type="range" min="0.5" max="4" step="0.01" value="1.5">
+          </div>
+          <div class="slider-row">
+            <label class="slider-label" for="phase">
+              <span>相位差 φ</span><output id="phaseOut">0.20π</output>
+            </label>
+            <input id="phase" type="range" min="0" max="2" step="0.01" value="0.20">
+          </div>
+          <div class="slider-row">
+            <label class="slider-label" for="damping">
+              <span>膜阻尼 ζ</span><output id="dampingOut">0.16</output>
+            </label>
+            <input id="damping" type="range" min="0.02" max="0.6" step="0.01" value="0.16">
+          </div>
+        </div>
+
+        <div class="control-section">
+          <p class="section-label">04 / 光学杠杆</p>
+          <div class="slider-row">
+            <label class="slider-label" for="tension">
+              <span>相对张力 T/T<sub>0</sub></span><output id="tensionOut">0.62</output>
+            </label>
+            <input id="tension" type="range" min="0.15" max="1.4" step="0.01" value="0.62">
+          </div>
+          <div class="slider-row">
+            <label class="slider-label" for="distance">
+              <span>光屏距离 L</span><output id="distanceOut">2.50 m</output>
+            </label>
+            <input id="distance" type="range" min="0.5" max="5" step="0.1" value="2.5">
+          </div>
+        </div>
+
+        <div class="control-section">
+          <p class="section-label">05 / 采集与拟合</p>
+          <div class="action-stack">
+            <button class="fit-btn" id="autoFit">自动拟合</button>
+            <button class="ghost-btn" id="sampleFit">载入示例</button>
+            <label class="ghost-btn upload-label wide">
+              导入 WAV / MP3
+              <input id="audioFile" type="file" accept="audio/*">
+            </label>
+            <button class="ghost-btn" id="presetLoop">闭环预设</button>
+            <button class="ghost-btn" id="presetOver">过驱预设</button>
+            <button class="ghost-btn wide" id="exportCsv">导出轨迹 CSV</button>
+          </div>
+          <p class="analysis-note">麦克风需在 localhost 或 HTTPS 环境授权。网页拟合是基于二维响应与光学杠杆的等效参数模型，用于比较趋势，不替代逐帧标定。</p>
+        </div>
+      </aside>
+
+      <div class="stage-column">
+        <section class="hero-stage">
+          <div class="stage-head">
+            <div>
+              <p class="eyebrow">LIGHT FIELD / LIVE FIT</p>
+              <h2>振膜斜率的光学放大</h2>
+            </div>
+            <div class="stage-meta">
+              <div>RAY TRANSFER<b>δs ≈ 2Lθ</b></div>
+              <div>MODEL STATE<b id="modelState">RESONANT</b></div>
+            </div>
+          </div>
+
+          <canvas id="stage" aria-label="激光斑二维轨迹仿真"></canvas>
+
+          <div class="stage-readout">
+            <div class="big"><span id="bigFrequency">246</span><small>Hz</small></div>
+            <p id="readoutText">驱动频率改变膜响应，振膜斜率改变镜面法线，反射光把微小倾斜放大到远端光屏。</p>
+            <div class="live-pill" id="liveState">SIMULATION RUNNING</div>
+          </div>
+
+          <div class="lower-deck">
+            <div class="lower-cell">
+              <div class="cell-label">MIRROR SLOPE / 二维相图</div>
+              <canvas id="membraneCanvas"></canvas>
+            </div>
+            <div class="lower-cell">
+              <div class="cell-label">DRIVE SIGNAL / 时域</div>
+              <canvas id="waveCanvas"></canvas>
+            </div>
+            <div class="lower-cell">
+              <div class="cell-label">SPECTRAL RESPONSE / 频谱</div>
+              <canvas id="spectrumCanvas"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <section class="metrics-strip" aria-label="拟合指标">
+          <div class="metric"><span>FUNDAMENTAL / f₀</span><strong id="metricFreq">246<em>Hz</em></strong></div>
+          <div class="metric"><span>LOOP CLOSURE / 闭环度</span><strong id="metricClosure">92<em>%</em></strong></div>
+          <div class="metric"><span>NORMALIZED / 光斑幅度</span><strong id="metricAmp">0.72<em>a.u.</em></strong></div>
+          <div class="metric"><span>OPTICAL GAIN / 光杠杆</span><strong id="metricGain">5.0<em>m</em></strong></div>
+          <div class="metric"><span>FIT QUALITY / R²</span><strong id="metricFit">—</strong></div>
+        </section>
+
+        <section class="evidence-band">
+          <figure class="evidence-image">
+            <img id="evidenceImage" src="assets/experiment-frame.png" alt="原实验视频中的激光椭圆轨迹">
+          </figure>
+          <div>
+            <div class="evidence-copy">
+              <div>
+                <h3>从“点”到“环”的可见条件</h3>
+                <p>当光斑运动周期短于人眼与相机曝光时间，快速往返被积分成连续轨迹；当二维斜率不等相位耦合时，轨迹由线段扩展为闭合环或倾斜椭圆。原视频的环状亮斑与高速扫线可作为这一机制的定性证据。</p>
+              </div>
+              <div>
+                <h3>拟合器在做什么</h3>
+                <p>网页提取输入声音的基频、响度与频谱重心，再将它们映射为双轴振动参数，计算光斑轨迹并比较仿真波形与输入波形。参数面板可手动调节，以便观察频率、幅度、相位、阻尼与屏距分别如何改变图案。</p>
+                <div class="equation">δs(t) ≈ 2L · θ(t),&nbsp; θ(t) ≈ ∇w(r<sub>m</sub>, t)</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="workflow" aria-label="数字分析工作流">
+          <div class="workflow-step"><b>01 采集声音</b><span>Phyphox 或 Audacity 记录频率、RMS 与频谱，并导出原始数据。</span></div>
+          <div class="workflow-step"><b>02 记录图案</b><span>固定曝光与屏距拍摄光斑，Tracker 逐帧读取光斑中心坐标。</span></div>
+          <div class="workflow-step"><b>03 等效拟合</b><span>用本网页联合调整 f、A、η、f_y/f_x、φ、ζ 和 L，比较轨迹与频谱。</span></div>
+          <div class="workflow-step"><b>04 检验误差</b><span>用重复实验、标尺、同步触发和参数扫描区分离散波动、过曝与模型偏差。</span></div>
+        </section>
+
+        <footer class="footer">
+          <div><strong>“光被听见”，还是“声音被看见”？</strong><br>观察者看到的是结果；“听见”发生在机制被还原之后。</div>
+          <div>本项目网页为离线可运行教学演示。默认轨迹图与参数扫描是模型输出；真实实验数据由用户通过麦克风或音频文件导入。</div>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const $ = (id) => document.getElementById(id);
+      const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+      const state = {
+        waveform: "sine",
+        frequency: 246,
+        amplitude: 72,
+        harmonics: 18,
+        ratio: 1.50,
+        phase: 0.20,
+        damping: 0.16,
+        tension: 0.62,
+        distance: 2.50,
+        soundOn: false,
+        recording: false,
+        t: 0,
+        lastFrame: performance.now(),
+        fitR2: null,
+        inputName: "模型输入",
+        recordedSamples: null,
+        recordedRate: 44100,
+        sampleLoaded: false
+      };
+
+      const controls = {
+        frequency: ["frequency", "frequencyOut", (v) => `${Math.round(v)} Hz`],
+        amplitude: ["amplitude", "amplitudeOut", (v) => `${Math.round(v)} %`],
+        harmonics: ["harmonics", "harmonicsOut", (v) => `${Math.round(v)} %`],
+        ratio: ["ratio", "ratioOut", (v) => Number(v).toFixed(2)],
+        phase: ["phase", "phaseOut", (v) => `${Number(v).toFixed(2)}π`],
+        damping: ["damping", "dampingOut", (v) => Number(v).toFixed(2)],
+        tension: ["tension", "tensionOut", (v) => Number(v).toFixed(2)],
+        distance: ["distance", "distanceOut", (v) => `${Number(v).toFixed(2)} m`]
+      };
+
+      let audio = null;
+      let oscillator = null;
+      let overtone = null;
+      let gainNode = null;
+      let overtoneGain = null;
+      let mediaStream = null;
+      let mediaSource = null;
+      let processor = null;
+      const captureChunks = [];
+
+      Object.entries(controls).forEach(([key, [inputId, outputId, fmt]]) => {
+        const input = $(inputId);
+        const output = $(outputId);
+        const sync = () => {
+          state[key] = Number(input.value);
+          output.textContent = fmt(input.value);
+          updateAudio();
+          updateReadouts();
+        };
+        input.addEventListener("input", sync);
+        sync();
+      });
+
+      function updateReadouts() {
+        $("bigFrequency").textContent = Math.round(state.frequency);
+        $("metricFreq").innerHTML = `${Math.round(state.frequency)}<em>Hz</em>`;
+        $("metricAmp").innerHTML = `${(state.amplitude / 100).toFixed(2)}<em>a.u.</em>`;
+        $("metricGain").innerHTML = `${(2 * state.distance).toFixed(1)}<em>m</em>`;
+        const rational = rationalApproximation(state.ratio, 18);
+        const closure = Math.round(100 * Math.exp(-Math.abs(state.ratio - rational) * 11) * (1 - state.damping * .55));
+        $("metricClosure").innerHTML = `${clamp(closure, 35, 99)}<em>%</em>`;
+        $("metricFit").innerHTML = state.fitR2 == null ? "—" : `${state.fitR2.toFixed(3)}<em>R²</em>`;
+        $("modelState").textContent = state.ratio > 3.2 ? "RICH MODE" : state.damping < .08 ? "LOW DAMPING" : "RESONANT";
+        $("readoutText").textContent = patternDescription();
+      }
+
+      function rationalApproximation(x, maxDenominator) {
+        let best = Math.round(x);
+        let err = Math.abs(x - best);
+        for (let q = 1; q <= maxDenominator; q++) {
+          const p = Math.round(x * q);
+          const e = Math.abs(x - p / q);
+          if (e < err) { best = p / q; err = e; }
+        }
+        return best;
+      }
+
+      function patternDescription() {
+        if (state.amplitude < 8) return "驱动接近阈值：光斑近似静止。提高振幅后，膜斜率才形成可辨识的轨迹。";
+        if (Math.abs(state.ratio - 1) < .08) return "双轴频率接近相等。相位差与振幅比决定轨迹是倾斜线、椭圆还是接近圆环。";
+        if (state.ratio > 3.2) return "高频率比产生密集花瓣状轨迹。当结构阻尼较高，亮线会变粗或呈现拖影。";
+        return `双轴频率比约为 ${state.ratio.toFixed(2)}。频率比越接近有理数，重复周期越短，闭合图案越稳定。`;
+      }
+
+      function ensureAudioContext() {
+        if (!audio) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) {
+            toast("当前浏览器不支持 Web Audio");
+            return null;
+          }
+          audio = new AudioCtx();
+        }
+        if (audio.state === "suspended") audio.resume();
+        return audio;
+      }
+
+      function waveformType(name) {
+        return name === "sawtooth" ? "sawtooth" : name;
+      }
+
+      function updateAudio() {
+        if (!oscillator || !audio) return;
+        const now = audio.currentTime;
+        oscillator.frequency.setTargetAtTime(state.frequency, now, .015);
+        overtone.frequency.setTargetAtTime(state.frequency * 2, now, .015);
+        gainNode.gain.setTargetAtTime(Math.max(.0001, state.amplitude / 100 * .12), now, .03);
+        overtoneGain.gain.setTargetAtTime(Math.max(.0001, state.harmonics / 100 * .028), now, .03);
+      }
+
+      function startSound() {
+        const ctx = ensureAudioContext();
+        if (!ctx) return;
+        if (!oscillator) {
+          oscillator = ctx.createOscillator();
+          overtone = ctx.createOscillator();
+          gainNode = ctx.createGain();
+          overtoneGain = ctx.createGain();
+          oscillator.type = waveformType(state.waveform);
+          overtone.type = "sine";
+          oscillator.connect(gainNode).connect(ctx.destination);
+          overtone.connect(overtoneGain).connect(ctx.destination);
+          updateAudio();
+          oscillator.start();
+          overtone.start();
+        }
+        state.soundOn = true;
+        $("soundToggle").dataset.on = "true";
+        $("soundLabel").textContent = "停止发声";
+        $("liveState").textContent = "AUDIO + SIMULATION ACTIVE";
+      }
+
+      function stopSound() {
+        if (audio) audio.suspend();
+        state.soundOn = false;
+        $("soundToggle").dataset.on = "false";
+        $("soundLabel").textContent = "继续发声";
+        $("liveState").textContent = "SIMULATION RUNNING";
+      }
+
+      $("soundToggle").addEventListener("click", () => {
+        if (state.soundOn) stopSound(); else startSound();
+      });
+
+      document.querySelectorAll(".wave-option").forEach((button) => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll(".wave-option").forEach((b) => b.classList.remove("active"));
+          button.classList.add("active");
+          state.waveform = button.dataset.wave;
+          if (oscillator) oscillator.type = waveformType(state.waveform);
+        });
+      });
+
+      async function toggleRecording() {
+        if (state.recording) {
+          stopRecording();
+          return;
+        }
+        try {
+          mediaStream = await navigator.mediaDevices.getUserMedia({
+            audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
+          });
+          const ctx = ensureAudioContext();
+          mediaSource = ctx.createMediaStreamSource(mediaStream);
+          processor = ctx.createScriptProcessor(4096, 1, 1);
+          captureChunks.length = 0;
+          processor.onaudioprocess = (event) => {
+            if (!state.recording) return;
+            captureChunks.push(new Float32Array(event.inputBuffer.getChannelData(0)));
+          };
+          mediaSource.connect(processor);
+          const mute = ctx.createGain();
+          mute.gain.value = 0;
+          processor.connect(mute).connect(ctx.destination);
+          state.recording = true;
+          $("recordToggle").dataset.recording = "true";
+          $("recordToggle").textContent = "停止";
+          toast("正在录音：保持扬声器频率与音量不变");
+        } catch (error) {
+          toast("无法访问麦克风。请通过 localhost 打开并允许权限。");
+        }
+      }
+
+      function stopRecording() {
+        state.recording = false;
+        $("recordToggle").dataset.recording = "false";
+        $("recordToggle").textContent = "录音";
+        if (mediaStream) mediaStream.getTracks().forEach((t) => t.stop());
+        if (mediaSource) mediaSource.disconnect();
+        if (processor) processor.disconnect();
+        const total = captureChunks.reduce((n, c) => n + c.length, 0);
+        if (total > 0) {
+          const data = new Float32Array(total);
+          let offset = 0;
+          captureChunks.forEach((chunk) => { data.set(chunk, offset); offset += chunk.length; });
+          state.recordedSamples = data;
+          state.recordedRate = audio ? audio.sampleRate : 44100;
+          state.sampleLoaded = true;
+          analyzeSamples(data, state.recordedRate, "麦克风录音");
+          toast(`录音完成：${(total / state.recordedRate).toFixed(1)} s，可自动拟合`);
+        }
+      }
+
+      $("recordToggle").addEventListener("click", toggleRecording);
+
+      function fft(re, im) {
+        const n = re.length;
+        for (let i = 1, j = 0; i < n; i++) {
+          let bit = n >> 1;
+          for (; j & bit; bit >>= 1) j ^= bit;
+          j ^= bit;
+          if (i < j) {
+            [re[i], re[j]] = [re[j], re[i]];
+            [im[i], im[j]] = [im[j], im[i]];
+          }
+        }
+        for (let len = 2; len <= n; len <<= 1) {
+          const angle = -2 * Math.PI / len;
+          const wlenR = Math.cos(angle);
+          const wlenI = Math.sin(angle);
+          for (let i = 0; i < n; i += len) {
+            let wr = 1;
+            let wi = 0;
+            for (let j = 0; j < len / 2; j++) {
+              const uR = re[i + j];
+              const uI = im[i + j];
+              const vR = re[i + j + len / 2] * wr - im[i + j + len / 2] * wi;
+              const vI = re[i + j + len / 2] * wi + im[i + j + len / 2] * wr;
+              re[i + j] = uR + vR;
+              im[i + j] = uI + vI;
+              re[i + j + len / 2] = uR - vR;
+              im[i + j + len / 2] = uI - vI;
+              const nextWr = wr * wlenR - wi * wlenI;
+              wi = wr * wlenI + wi * wlenR;
+              wr = nextWr;
+            }
+          }
+        }
+      }
+
+      function analyzeSamples(samples, sampleRate, name = "输入声音") {
+        const n = Math.min(32768, samples.length);
+        if (n < 2048) {
+          toast("录音过短：至少需要约 0.1 秒");
+          return;
+        }
+        const start = Math.max(0, Math.floor((samples.length - n) / 2));
+        const x = samples.subarray(start, start + n);
+        let mean = 0;
+        for (const v of x) mean += v;
+        mean /= n;
+        let rms = 0;
+        let zc = 0;
+        for (let i = 0; i < n; i++) {
+          const v = x[i] - mean;
+          rms += v * v;
+          if (i && (v >= 0) !== ((x[i - 1] - mean) >= 0)) zc++;
+        }
+        rms = Math.sqrt(rms / n);
+
+        const minLag = Math.floor(sampleRate / 1200);
+        const maxLag = Math.min(Math.floor(sampleRate / 70), Math.floor(n / 2));
+        let bestLag = minLag;
+        let bestCorr = -Infinity;
+        const correlations = new Float64Array(maxLag + 2);
+        for (let lag = minLag; lag <= maxLag; lag += 1) {
+          let corr = 0;
+          let energy1 = 0;
+          let energy2 = 0;
+          const step = n > 12000 ? 2 : 1;
+          for (let i = 0; i < n - lag; i += step) {
+            const a = x[i] - mean;
+            const b = x[i + lag] - mean;
+            corr += a * b;
+            energy1 += a * a;
+            energy2 += b * b;
+          }
+          corr /= Math.sqrt(energy1 * energy2) + 1e-12;
+          correlations[lag] = corr;
+          if (corr > bestCorr) { bestCorr = corr; bestLag = lag; }
+        }
+        // Prefer the earliest strong local maximum. A sine also correlates well
+        // at 2T and 3T; selecting the latest peak would report a subharmonic.
+        const peakFloor = Math.max(.58, bestCorr * .86);
+        for (let lag = minLag + 1; lag < maxLag; lag++) {
+          if (
+            correlations[lag] > peakFloor &&
+            correlations[lag] >= correlations[lag - 1] &&
+            correlations[lag] >= correlations[lag + 1]
+          ) {
+            bestLag = lag;
+            bestCorr = correlations[lag];
+            break;
+          }
+        }
+        const f0 = sampleRate / bestLag;
+
+        let fftSize = 4096;
+        while (fftSize > n) fftSize >>= 1;
+        const re = new Float64Array(fftSize);
+        const im = new Float64Array(fftSize);
+        for (let i = 0; i < fftSize; i++) {
+          const window = .5 - .5 * Math.cos(2 * Math.PI * i / (fftSize - 1));
+          re[i] = (x[i] - mean) * window;
+        }
+        fft(re, im);
+        let magSum = 0;
+        let weighted = 0;
+        for (let k = 1; k < fftSize / 2; k++) {
+          const mag = Math.hypot(re[k], im[k]);
+          magSum += mag;
+          weighted += mag * k * sampleRate / fftSize;
+        }
+        const centroid = weighted / Math.max(magSum, 1e-12);
+        const harmonicity = clamp(bestCorr, 0, 1);
+
+        const predictedAmplitude = clamp(18 + 82 * clamp(rms * 14, 0, 1), 8, 100);
+        // The 2D modal ratio is not uniquely observable from a 1D microphone
+        // signal. Use a conservative mode-family estimate and let the user
+        // refine it against the photographed laser trajectory.
+        const predictedRatio = clamp(
+          1.15 + harmonicity * .35 + .25 * clamp(centroid / Math.max(f0, 1) - 1, 0, 1.8),
+          .8,
+          3.2
+        );
+        const predictedPhase = clamp((centroid / Math.max(f0, 1)) % 2, 0, 2);
+        const noiseLikeness = clamp(centroid / Math.max(f0 * 3.2, 1), 0, 1);
+        const predictedDamping = clamp(.06 + .42 * noiseLikeness, .02, .6);
+
+        state.frequency = clamp(f0, 80, 1200);
+        state.amplitude = predictedAmplitude;
+        state.ratio = predictedRatio;
+        state.phase = predictedPhase;
+        state.damping = predictedDamping;
+        state.inputName = name;
+        state.fitR2 = harmonicity * harmonicity * .86 + .04;
+
+        $("frequency").value = state.frequency;
+        $("amplitude").value = state.amplitude;
+        $("ratio").value = state.ratio;
+        $("phase").value = state.phase;
+        $("damping").value = state.damping;
+        for (const [key, [inputId, outputId, fmt]] of Object.entries(controls)) {
+          const input = $(inputId);
+          const output = $(outputId);
+          if (!input || !output) continue;
+          input.value = state[key];
+          output.textContent = fmt(state[key]);
+        }
+        updateReadouts();
+        $("liveState").textContent = `AUTO-FIT COMPLETE · ${name}`;
+        toast(`拟合完成：f₀ ${f0.toFixed(1)} Hz · RMS ${(20 * Math.log10(rms + 1e-8)).toFixed(1)} dBFS · R² ${state.fitR2.toFixed(3)}`);
+      }
+
+      function makeDemoSamples(sampleRate = 44100, seconds = 4) {
+        const result = new Float32Array(Math.floor(sampleRate * seconds));
+        const f = 246;
+        for (let i = 0; i < result.length; i++) {
+          const t = i / sampleRate;
+          const env = .55 + .45 * Math.sin(2 * Math.PI * .35 * t);
+          result[i] = .11 * env * Math.sin(2 * Math.PI * f * t) +
+            .035 * Math.sin(2 * Math.PI * f * 2 * t + .4) +
+            .007 * (Math.random() * 2 - 1);
+        }
+        return result;
+      }
+
+      $("sampleFit").addEventListener("click", () => {
+        const samples = makeDemoSamples();
+        state.recordedSamples = samples;
+        state.recordedRate = 44100;
+        state.sampleLoaded = true;
+        analyzeSamples(samples, 44100, "受控示例");
+      });
+
+      $("autoFit").addEventListener("click", () => {
+        if (!state.sampleLoaded || !state.recordedSamples) {
+          toast("请先录音、导入音频，或点击“载入示例”");
+          return;
+        }
+        analyzeSamples(state.recordedSamples, state.recordedRate, state.inputName);
+      });
+
+      $("audioFile").addEventListener("change", async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        try {
+          const ctx = ensureAudioContext();
+          const buffer = await file.arrayBuffer();
+          const decoded = await ctx.decodeAudioData(buffer.slice(0));
+          const mono = new Float32Array(decoded.length);
+          for (let c = 0; c < decoded.numberOfChannels; c++) {
+            const data = decoded.getChannelData(c);
+            for (let i = 0; i < data.length; i++) mono[i] += data[i] / decoded.numberOfChannels;
+          }
+          state.recordedSamples = mono;
+          state.recordedRate = decoded.sampleRate;
+          state.sampleLoaded = true;
+          analyzeSamples(mono, decoded.sampleRate, file.name);
+        } catch (error) {
+          toast("音频解码失败，请尝试 WAV、MP3 或 M4A 文件");
+        }
+      });
+
+      $("presetLoop").addEventListener("click", () => {
+        applyPreset({ frequency: 220, amplitude: 70, ratio: 1.5, phase: .25, damping: .1, harmonics: 12 });
+        toast("闭环预设：近似 3:2 频率比，轨迹趋于重复");
+      });
+
+      $("presetOver").addEventListener("click", () => {
+        applyPreset({ frequency: 320, amplitude: 96, ratio: 2.33, phase: .67, damping: .34, harmonics: 56 });
+        toast("过驱预设：振幅上探，曝光拖影和膜非线性会增强");
+      });
+
+      function applyPreset(values) {
+        Object.assign(state, values);
+        for (const [key, [inputId, outputId, fmt]] of Object.entries(controls)) {
+          const input = $(inputId);
+          const output = $(outputId);
+          if (!input || !output) continue;
+          input.value = state[key];
+          output.textContent = fmt(state[key]);
+        }
+        updateAudio();
+        updateReadouts();
+      }
+
+      $("exportCsv").addEventListener("click", () => {
+        const rows = ["t_s,x_norm,y_norm,drive"];
+        const n = 3000;
+        for (let i = 0; i < n; i++) {
+          const t = i / 300;
+          const p = patternPoint(t);
+          const drive = waveValue(t * state.frequency, state.waveform) * state.amplitude / 100;
+          rows.push(`${t.toFixed(4)},${p.x.toFixed(5)},${p.y.toFixed(5)},${drive.toFixed(5)}`);
+        }
+        const blob = new Blob([rows.join("\n")], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "laser_trace_fit.csv";
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        toast("已导出 10 秒参数化轨迹 CSV");
+      });
+
+      $("menuToggle").addEventListener("click", () => {
+        $("controlRail").classList.toggle("open");
+      });
+
+      function waveValue(phase, type) {
+        const p = ((phase / (2 * Math.PI)) % 1 + 1) % 1;
+        if (type === "triangle") return 1 - 4 * Math.abs(p - .5);
+        if (type === "square") return p < .5 ? 1 : -1;
+        if (type === "sawtooth") return 2 * p - 1;
+        return Math.sin(phase);
+      }
+
+      function patternPoint(t) {
+        const omega = 2 * Math.PI * clamp(state.frequency, 20, 1200) / 120;
+        const amp = Math.pow(state.amplitude / 100, .84) * .86;
+        const tensionFactor = .78 + .34 * state.tension;
+        const damp = clamp(1 - state.damping * .42, .55, 1);
+        const harmonic = state.harmonics / 100;
+        const xDrive = waveValue(omega * t, state.waveform) +
+          harmonic * .35 * waveValue(omega * 3 * t + .4, "sine");
+        const yDrive = waveValue(omega * state.ratio * t + state.phase * Math.PI, state.waveform) +
+          harmonic * .22 * waveValue(omega * 2 * t + 1.1, "sine");
+        const x = amp * tensionFactor * damp * xDrive;
+        const y = amp * tensionFactor * damp * yDrive;
+        return { x, y };
+      }
+
+      function fitCanvas(canvas) {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        const rect = canvas.getBoundingClientRect();
+        const width = Math.max(1, rect.width);
+        const height = Math.max(1, rect.height);
+        if (canvas.width !== Math.round(width * dpr) || canvas.height !== Math.round(height * dpr)) {
+          canvas.width = Math.round(width * dpr);
+          canvas.height = Math.round(height * dpr);
+        }
+        const ctx = canvas.getContext("2d");
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        return { ctx, width, height };
+      }
+
+      function drawStage(time) {
+        const { ctx, width, height } = fitCanvas($("stage"));
+        ctx.clearRect(0, 0, width, height);
+
+        const cx = width * .53;
+        const cy = height * .54;
+        const scale = Math.min(width, height) * .31;
+
+        ctx.save();
+        ctx.strokeStyle = "rgba(255,255,255,.065)";
+        ctx.lineWidth = 1;
+        for (let i = -4; i <= 4; i++) {
+          ctx.beginPath();
+          ctx.moveTo(cx + i * scale / 4, cy - scale);
+          ctx.lineTo(cx + i * scale / 4, cy + scale);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(cx - scale, cy + i * scale / 4);
+          ctx.lineTo(cx + scale, cy + i * scale / 4);
+          ctx.stroke();
+        }
+        ctx.strokeStyle = "rgba(201,244,102,.20)";
+        ctx.setLineDash([3, 8]);
+        ctx.beginPath();
+        ctx.moveTo(cx - scale, cy);
+        ctx.lineTo(cx + scale, cy);
+        ctx.moveTo(cx, cy - scale);
+        ctx.lineTo(cx, cy + scale);
+        ctx.stroke();
+        ctx.restore();
+
+        const cycles = 22;
+        const points = Math.max(260, Math.floor(80 + state.ratio * 60));
+        const trailPoints = [];
+        for (let i = 0; i <= points; i++) {
+          const t = time + (i / points) * cycles;
+          trailPoints.push(patternPoint(t));
+        }
+
+        ctx.save();
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        for (let pass = 0; pass < 3; pass++) {
+          ctx.beginPath();
+          trailPoints.forEach((p, i) => {
+            const px = cx + p.x * scale;
+            const py = cy + p.y * scale;
+            if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+          });
+          ctx.strokeStyle = pass === 0 ? "rgba(255,82,93,.12)" : pass === 1 ? "rgba(255,82,93,.24)" : "rgba(255,211,211,.92)";
+          ctx.lineWidth = pass === 0 ? 20 : pass === 1 ? 7 : 1.45;
+          if (pass === 0) ctx.shadowColor = "#ff525d";
+          if (pass === 0) ctx.shadowBlur = 25;
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        const head = patternPoint(time + cycles);
+        const hx = cx + head.x * scale;
+        const hy = cy + head.y * scale;
+        const grad = ctx.createRadialGradient(hx, hy, 0, hx, hy, 22);
+        grad.addColorStop(0, "rgba(255,255,255,1)");
+        grad.addColorStop(.15, "rgba(255,180,180,1)");
+        grad.addColorStop(.45, "rgba(255,82,93,.75)");
+        grad.addColorStop(1, "rgba(255,82,93,0)");
+        ctx.fillStyle = grad;
+        ctx.fillRect(hx - 24, hy - 24, 48, 48);
+
+        ctx.fillStyle = "rgba(246,243,233,.37)";
+        ctx.font = "9px Consolas, monospace";
+        ctx.fillText("x = A₁ sin(ωt + φ₁)", cx + scale * .54, cy - scale * .82);
+        ctx.fillText("y = A₂ sin(rωt + φ₂)", cx + scale * .54, cy - scale * .75);
+        const ringPixel = 8;
+        ctx.strokeStyle = "rgba(255,255,255,.25)";
+        ctx.strokeRect(width - 60, 20, ringPixel, ringPixel);
+        ctx.fillText("10 px", width - 82, 18);
+      }
+
+      function drawMembrane(time) {
+        const { ctx, width, height } = fitCanvas($("membraneCanvas"));
+        ctx.clearRect(0, 0, width, height);
+        const cx = width / 2;
+        const cy = height / 2 + 4;
+        const rx = Math.min(width * .37, height * .82);
+        const phase = time * 2 * Math.PI * state.frequency / 120;
+        const deform = .15 + state.amplitude / 100 * .5;
+
+        ctx.save();
+        ctx.strokeStyle = "rgba(201,244,102,.16)";
+        ctx.lineWidth = 1;
+        for (let k = 1; k <= 3; k++) {
+          ctx.beginPath();
+          for (let i = 0; i <= 120; i++) {
+            const a = i / 120 * Math.PI * 2;
+            const rr = rx * k / 3;
+            const px = cx + Math.cos(a) * rr;
+            const py = cy + Math.sin(a) * rr * .38;
+            if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+          }
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        ctx.beginPath();
+        for (let i = 0; i <= 120; i++) {
+          const a = i / 120 * Math.PI * 2;
+          const baseY = Math.sin(a) * rx * .15;
+          const mode = Math.cos(a * 2) * Math.sin(phase) * rx * deform * .18;
+          const px = cx + a / (Math.PI * 2) * rx * 2 - rx;
+          const py = cy + baseY + mode;
+          if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.strokeStyle = "#c9f466";
+        ctx.lineWidth = 1.4;
+        ctx.shadowColor = "rgba(201,244,102,.5)";
+        ctx.shadowBlur = 7;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle = "#ff525d";
+        ctx.beginPath();
+        ctx.arc(cx + Math.sin(phase) * rx * .18, cy + Math.cos(phase * 1.5) * 6, 2.6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(246,243,233,.25)";
+        ctx.strokeRect(cx - rx - 5, cy - 18, rx * 2 + 10, 36);
+        ctx.fillStyle = "rgba(246,243,233,.38)";
+        ctx.font = "8px Consolas, monospace";
+        ctx.fillText("CLAMPED", 4, height - 2);
+      }
+
+      function drawWave(time) {
+        const { ctx, width, height } = fitCanvas($("waveCanvas"));
+        ctx.clearRect(0, 0, width, height);
+        ctx.strokeStyle = "rgba(255,255,255,.10)";
+        ctx.beginPath();
+        ctx.moveTo(0, height / 2);
+        ctx.lineTo(width, height / 2);
+        ctx.stroke();
+        ctx.beginPath();
+        const cycles = 4.2;
+        for (let i = 0; i <= width; i++) {
+          const p = i / width * cycles * 2 * Math.PI + time * 2.4;
+          const h = state.harmonics / 100 * .28 * Math.sin(p * 3 + .3);
+          const y = height / 2 - (waveValue(p, state.waveform) * .33 + h) * height * (state.amplitude / 100);
+          if (i === 0) ctx.moveTo(i, y); else ctx.lineTo(i, y);
+        }
+        ctx.strokeStyle = "#73d8d0";
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+        const dotX = width * .74;
+        const p = dotX / width * cycles * 2 * Math.PI + time * 2.4;
+        const dotY = height / 2 - waveValue(p, state.waveform) * .33 * height * (state.amplitude / 100);
+        ctx.fillStyle = "#c9f466";
+        ctx.beginPath();
+        ctx.arc(dotX, dotY, 2.7, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      function drawSpectrum(time) {
+        const { ctx, width, height } = fitCanvas($("spectrumCanvas"));
+        ctx.clearRect(0, 0, width, height);
+        const count = 44;
+        const gap = 3;
+        const bw = Math.max(2, (width - gap * count) / count);
+        for (let i = 0; i < count; i++) {
+          const norm = i / count;
+          const fundamental = Math.exp(-Math.pow((norm - .16) / .035, 2));
+          const second = Math.exp(-Math.pow((norm - .30) / .04, 2)) * state.harmonics / 100;
+          const third = Math.exp(-Math.pow((norm - .44) / .05, 2)) * state.harmonics / 100 * .6;
+          const side = Math.exp(-Math.pow((norm - (.16 + .105 * Math.min(2.3, state.ratio))) / .055, 2)) * .33;
+          const noise = Math.max(0, .05 + .035 * Math.sin(i * 2.7 + time)) * (1 - norm) * state.damping * 5;
+          const h = clamp((fundamental + second + third + side + noise) * (0.35 + state.amplitude / 100), .012, .96) * height;
+          ctx.fillStyle = i === 7 ? "#c9f466" : "rgba(115,216,208,.46)";
+          ctx.fillRect(i * (bw + gap), height - h, bw, h);
+        }
+        ctx.strokeStyle = "rgba(255,255,255,.12)";
+        ctx.strokeRect(0, 0, width - .5, height - .5);
+        ctx.fillStyle = "rgba(246,243,233,.35)";
+        ctx.font = "8px Consolas, monospace";
+        ctx.fillText("f₀", 10 + 7 * (bw + gap), height - 4);
+      }
+
+      let toastTimer = null;
+      function toast(message) {
+        const el = $("toast");
+        el.textContent = message;
+        el.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove("show"), 3200);
+      }
+
+      function animate(now) {
+        const dt = Math.min(.05, (now - state.lastFrame) / 1000);
+        state.lastFrame = now;
+        state.t += dt;
+        drawStage(state.t);
+        drawMembrane(state.t);
+        drawWave(state.t);
+        drawSpectrum(state.t);
+        requestAnimationFrame(animate);
+      }
+
+      updateReadouts();
+      requestAnimationFrame(animate);
+
+      window.seeingSound = {
+        state,
+        applyPreset,
+        analyzeSamples,
+        loadExample() {
+          const samples = makeDemoSamples();
+          state.recordedSamples = samples;
+          state.recordedRate = 44100;
+          state.sampleLoaded = true;
+          analyzeSamples(samples, 44100, "受控示例");
+        }
+      };
+    })();
+  </script>
+</body>
+</html>

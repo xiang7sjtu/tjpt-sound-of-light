@@ -349,6 +349,34 @@ h1 em {
   line-height: 1.6;
 }
 
+.public-tool-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 5px;
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+.public-tool-link:hover {
+  color: var(--terracotta-dark);
+  border-color: var(--terracotta);
+}
+
+.public-tool-link svg {
+  width: 15px;
+  height: 15px;
+  transition: transform 160ms ease;
+}
+
+.public-tool-link:hover svg {
+  transform: translateX(3px);
+}
+
 .library {
   padding: 48px 0 70px;
 }
