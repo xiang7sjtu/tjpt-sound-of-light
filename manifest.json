@@ -1,11 +1,11 @@
 {
   "version": 1,
   "project": "声的十四行诗与听见一束光",
-  "createdAt": "2026-11-22T08:13:48.846Z",
+  "createdAt": "2026-11-22T09:23:35.263Z",
   "kdf": {
     "name": "PBKDF2-SHA-256",
     "iterations": 210000,
-    "salt": "Q8oFYv5DVaUiC288d9Y7cA=="
+    "salt": "T0/SYPGTu+Vsjkyoxg069Q=="
   },
   "cipher": "AES-256-GCM",
   "assets": [
@@ -30,9 +30,9 @@
       "filename": "声的十四行诗与听见一束光_PPT讲解_实验现象版.mp4",
       "description": "1920 × 1080 · H.264 / AAC",
       "download": false,
-      "plainBytes": 27733426,
-      "encryptedBytes": 27733459,
-      "sha256": "ba6b6cd31bbd21b06f921af5af9afb8dbaa5600b9068e7424d57491a0f3d6532",
+      "plainBytes": 28497133,
+      "encryptedBytes": 28497166,
+      "sha256": "8457516a4a8edd0d719566f7b3089256704587dba2c2fd915f6e2f681c8032ba",
       "parts": [
         {
           "file": "video.part-01.bin",
@@ -60,7 +60,7 @@
         },
         {
           "file": "video.part-07.bin",
-          "encryptedBytes": 2567635
+          "encryptedBytes": 3331342
         }
       ]
     },
@@ -72,9 +72,9 @@
       "filename": "声的十四行诗与听见一束光_PPT讲解_AI文字稿.txt",
       "description": "纯文本 · 18 段",
       "download": true,
-      "plainBytes": 7340,
-      "encryptedBytes": 7373,
-      "sha256": "aa5b3db76f367a4ac8aaa8338c1a2415d69dc40fe7c260df8bc9409f3874aec0",
+      "plainBytes": 7670,
+      "encryptedBytes": 7703,
+      "sha256": "16f5a44fa0a3c0316b644bfbeb83d14532f3dc00124ccfb688c6b7b2461ce936",
       "file": "script.bin"
     },
     {
@@ -85,9 +85,9 @@
       "filename": "声的十四行诗与听见一束光_项目汇报_终稿.pptx",
       "description": "18 页 · 终稿",
       "download": true,
-      "plainBytes": 912471,
-      "encryptedBytes": 912504,
-      "sha256": "6e05deea2eb8d0cd25ad8c59868c7108ff378c75c27f1b8223344f7770cc6fb3",
+      "plainBytes": 912633,
+      "encryptedBytes": 912666,
+      "sha256": "4659b1ade4fb105cf49d16cf69b322eed302c0a9a602a4a6b043c9bb8963a499",
       "file": "ppt.bin"
     },
     {
@@ -98,9 +98,9 @@
       "filename": "声的十四行诗与听见一束光_设计说明书.pdf",
       "description": "A4 · 21 页",
       "download": true,
-      "plainBytes": 1487090,
-      "encryptedBytes": 1487123,
-      "sha256": "f3c1a47357cc1251c6c85134447996a61373e5583034b7f79549330b58108e08",
+      "plainBytes": 1489268,
+      "encryptedBytes": 1489301,
+      "sha256": "ad62edfacaff8f7241305f0ebff5a6d495e10f8dfa845c72655403e55ed45877",
       "file": "pdf.bin"
     }
   ]

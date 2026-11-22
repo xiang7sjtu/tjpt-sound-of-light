@@ -181,6 +181,16 @@ h1 em {
   line-height: 1.95;
 }
 
+.english-title {
+  max-width: 600px;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 15px;
+  line-height: 1.6;
+  letter-spacing: 0;
+}
+
 .stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
